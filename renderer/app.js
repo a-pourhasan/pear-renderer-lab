@@ -46,13 +46,30 @@ const offWorkerStderr = bridge.onWorkerStderr(workers.main, (data) => {
 const offWorkerIpc = bridge.onWorkerIPC(workers.main, (data) => {
   const message = decoder.decode(data)
   console.log('worker ipc', '[', workers.main, ']:', message)
-  onWorkerUpdaterEvent(message)
+  //onWorkerUpdaterEvent(message)
+  
+  let parsed
+  try {
+	  parsed = JSON.parse(message)
+  } catch {
+	  onWorkerUpdaterEvent(message)
+	  parsed = null;
+  }
+  
+  if(parsed?.type === 'pong') {
+	  document.getElementById('pong').innerText = 'worker time: ' + parsed.time
+  }
 
   if (!sentHello) {
     sentHello = true
     bridge.writeWorkerIPC(workers.main, 'Hello from renderer')
   }
 })
+
+
+document.getElementById('ping-btn').onclick = () => {
+  bridge.writeWorkerIPC(workers.main, JSON.stringify({ type: 'ping' }))
+}
 
 const offWorkerExit = bridge.onWorkerExit(workers.main, (code) => {
   console.log('Worker exited with code', code)
