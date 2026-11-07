@@ -54,6 +54,28 @@ goodbye(async () => {
   await store.close()
 })
 
+function startSimulation(total) {
+	const peers = ['arman', 'amir', 'sara']
+	const base = Date.now()
+	
+	for (let i = 0; i < total; i++) {
+		const msg = {
+			type: 'msg',
+			id: 'm' + i,
+			peer: peers[i % peers.length],
+			ts: base + i * 20,
+			text: 'Message' + i
+		}
+		
+		const delay = i * 2 + Math.random() * 800
+		setTimeout(() => pipe.write(JSON.stringify(msg)), delay)
+		
+		if (Math.random() < 0.05) {
+			setTimeout(() => pipe.write(JSON.stringify(msg)), delay + Math.random() * 1500)
+		}
+	}
+}
+
 pipe.on('data', async (data) => {
   const message = data.toString()
   //if (message !== 'pear:applyUpdate') {
@@ -71,8 +93,11 @@ pipe.on('data', async (data) => {
   try {
 	const msg = JSON.parse(message)
 	if (msg.type === 'ping') {
-    pipe.write(JSON.stringify({ type: 'pong', time: new Date().toISOString() }))
+		pipe.write(JSON.stringify({ type: 'pong', time: new Date().toISOString() }))
     }
+	if (msg.type === 'sim:start') {
+		startSimulation(msg.count)
+	}
   } catch {
 	console.log(message)
   }

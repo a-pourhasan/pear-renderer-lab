@@ -45,7 +45,7 @@ const offWorkerStderr = bridge.onWorkerStderr(workers.main, (data) => {
 
 const offWorkerIpc = bridge.onWorkerIPC(workers.main, (data) => {
   const message = decoder.decode(data)
-  console.log('worker ipc', '[', workers.main, ']:', message)
+  //console.log('worker ipc', '[', workers.main, ']:', message)
   //onWorkerUpdaterEvent(message)
   
   let parsed
@@ -59,6 +59,14 @@ const offWorkerIpc = bridge.onWorkerIPC(workers.main, (data) => {
   if(parsed?.type === 'pong') {
 	  document.getElementById('pong').innerText = 'worker time: ' + parsed.time
   }
+  
+  if (parsed?.type === 'msg') {
+	  const li = document.createElement('li')
+	  const ul = document.getElementById('messages')
+	  li.textContent = parsed.id + '|' + parsed.peer + '|' + parsed.text
+	  ul.appendChild(li)
+	  document.getElementById('count').innerText = ul.children.length + 'messages'
+  }
 
   if (!sentHello) {
     sentHello = true
@@ -69,6 +77,10 @@ const offWorkerIpc = bridge.onWorkerIPC(workers.main, (data) => {
 
 document.getElementById('ping-btn').onclick = () => {
   bridge.writeWorkerIPC(workers.main, JSON.stringify({ type: 'ping' }))
+}
+
+document.getElementById('sim-btn').onclick = () => {
+	bridge.writeWorkerIPC(workers.main, JSON.stringify({ type: 'sim:start', count: 5000}))
 }
 
 const offWorkerExit = bridge.onWorkerExit(workers.main, (code) => {
