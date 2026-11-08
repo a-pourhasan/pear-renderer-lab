@@ -1,5 +1,29 @@
+import { createMessageStore } from './store.js'
+import { perf } from './performance.js'
+
+const store = createMessageStore()
+const listEl = document.getElementById('messages')
+const countEl = document.getElementById('count')
+
 const bridge = window.bridge
 const decoder = new TextDecoder('utf-8')
+
+function render() {
+	const t0 = performance.now()
+	const items = store.getAll()
+	const frag = document.createDocumentFragment()
+	for (const m of items) {
+		const li = document.createElement('li')
+		li.textContent = m.id + ' | ' + m.peer + ' | ' + m.text
+		frag.appendChild(li)
+	}
+	listEl.replaceChildren(frag)
+	const { received, unique } = store.getStats()
+	countEl.innerText = `${received} received, ${unique} unique, ${received - unique} duplicates`
+	perf.record(performance.now() - t0, items.length)
+}
+
+store.subscribe(render)
 
 document.getElementById('v').innerText += bridge.pkg().version
 
@@ -50,22 +74,24 @@ const offWorkerIpc = bridge.onWorkerIPC(workers.main, (data) => {
   
   let parsed
   try {
-	  parsed = JSON.parse(message)
+	parsed = JSON.parse(message)
   } catch {
-	  onWorkerUpdaterEvent(message)
-	  parsed = null;
+	onWorkerUpdaterEvent(message)
+	parsed = null;
   }
   
   if(parsed?.type === 'pong') {
-	  document.getElementById('pong').innerText = 'worker time: ' + parsed.time
+	document.getElementById('pong').innerText = 'worker time: ' + parsed.time
   }
   
   if (parsed?.type === 'msg') {
-	  const li = document.createElement('li')
-	  const ul = document.getElementById('messages')
-	  li.textContent = parsed.id + '|' + parsed.peer + '|' + parsed.text
-	  ul.appendChild(li)
-	  document.getElementById('count').innerText = ul.children.length + 'messages'
+	//const li = document.createElement('li')
+	//const ul = document.getElementById('messages')
+	//li.textContent = parsed.id + '|' + parsed.peer + '|' + parsed.text
+	//ul.appendChild(li)
+	//document.getElementById('count').innerText = ul.children.length + 'messages'
+	
+	store.add(parsed)
   }
 
   if (!sentHello) {
@@ -74,12 +100,12 @@ const offWorkerIpc = bridge.onWorkerIPC(workers.main, (data) => {
   }
 })
 
-
 document.getElementById('ping-btn').onclick = () => {
   bridge.writeWorkerIPC(workers.main, JSON.stringify({ type: 'ping' }))
 }
 
 document.getElementById('sim-btn').onclick = () => {
+	store.clear()
 	bridge.writeWorkerIPC(workers.main, JSON.stringify({ type: 'sim:start', count: 5000}))
 }
 
