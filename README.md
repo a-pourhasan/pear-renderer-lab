@@ -11,7 +11,6 @@ This repo simulates that situation and walks through four steps to keep the UI c
 
 > **Disclaimer:** this is an independent learning project. It is not affiliated with, endorsed by, or an official project of Holepunch, Pear, Keet, or Tether. It started from the official `hello-pear-electron` template; see [License](#license).
 
-![App overview](docs/screenshots/app-overview.png)
 
 ## Simulation Demo
 
