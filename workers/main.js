@@ -55,25 +55,25 @@ goodbye(async () => {
 })
 
 function startSimulation(total) {
-	const peers = ['arman', 'amir', 'sara']
-	const base = Date.now()
-	
-	for (let i = 0; i < total; i++) {
-		const msg = {
-			type: 'msg',
-			id: 'm' + i,
-			peer: peers[i % peers.length],
-			ts: base + i * 20,
-			text: 'Message' + i
-		}
-		
-		const delay = i * 2 + Math.random() * 800
-		setTimeout(() => pipe.write(JSON.stringify(msg)), delay)
-		
-		if (Math.random() < 0.05) {
-			setTimeout(() => pipe.write(JSON.stringify(msg)), delay + Math.random() * 1500)
-		}
-	}
+  const peers = ['arman', 'amir', 'sara']
+  const base = Date.now()
+
+  for (let i = 0; i < total; i++) {
+    const msg = {
+      type: 'msg',
+      id: 'm' + i,
+      peer: peers[i % peers.length],
+      ts: base + i * 20,
+      text: 'Message' + i
+    }
+
+    const delay = i * 2 + Math.random() * 800
+    setTimeout(() => pipe.write(JSON.stringify(msg)), delay)
+
+    if (Math.random() < 0.05) {
+      setTimeout(() => pipe.write(JSON.stringify(msg)), delay + Math.random() * 1500)
+    }
+  }
 }
 
 pipe.on('data', async (data) => {
@@ -82,24 +82,24 @@ pipe.on('data', async (data) => {
   //  pipe.write('unknown-message ' + message)
   //  return
   //}
-  
+
   if (message === 'pear:applyUpdate') {
-	await pear.ready()
-	await pear.updater.applyUpdate()
-	pipe.write('pear:updateApplied')
-	return
+    await pear.ready()
+    await pear.updater.applyUpdate()
+    pipe.write('pear:updateApplied')
+    return
   }
 
   try {
-	const msg = JSON.parse(message)
-	if (msg.type === 'ping') {
-		pipe.write(JSON.stringify({ type: 'pong', time: new Date().toISOString() }))
+    const msg = JSON.parse(message)
+    if (msg.type === 'ping') {
+      pipe.write(JSON.stringify({ type: 'pong', time: new Date().toISOString() }))
     }
-	if (msg.type === 'sim:start') {
-		startSimulation(msg.count)
-	}
+    if (msg.type === 'sim:start') {
+      startSimulation(msg.count)
+    }
   } catch {
-	console.log(message)
+    console.log(message)
   }
 
   //try {

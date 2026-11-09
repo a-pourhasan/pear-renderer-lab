@@ -19,17 +19,17 @@ export const perf = {
   },
 
   report() {
-	/**
-	* Benchmark Metrics:
-	* - renders: Total UI re-render count
-	* - total: Total DOM construction time (primary comparison metric)
-	* - avg / max: Average and worst render times (> ~16ms indicates dropped frames at 60 FPS)
-	* - last: Final render duration with 5,000 messages
-	*/
+    /**
+     * Benchmark Metrics:
+     * - renders: Total UI re-render count
+     * - total: Total DOM construction time (primary comparison metric)
+     * - avg / max: Average and worst render times (> ~16ms indicates dropped frames at 60 FPS)
+     * - last: Final render duration with 5,000 messages
+     */
     console.log(
       `[perf] renders=${this.renders} total=${this.total.toFixed(0)}ms ` +
-      `avg=${(this.total / this.renders).toFixed(1)}ms max=${this.max.toFixed(1)}ms ` +
-      `last=${this.last.toFixed(1)}ms items=${this.items}`
+        `avg=${(this.total / this.renders).toFixed(1)}ms max=${this.max.toFixed(1)}ms ` +
+        `last=${this.last.toFixed(1)}ms items=${this.items}`
     )
     this.renders = 0
     this.total = 0

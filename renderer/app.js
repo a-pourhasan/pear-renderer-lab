@@ -103,27 +103,27 @@ const offWorkerIpc = bridge.onWorkerIPC(workers.main, (data) => {
   const message = decoder.decode(data)
   //console.log('worker ipc', '[', workers.main, ']:', message)
   //onWorkerUpdaterEvent(message)
-  
+
   let parsed
   try {
-	parsed = JSON.parse(message)
+    parsed = JSON.parse(message)
   } catch {
-	onWorkerUpdaterEvent(message)
-	parsed = null;
+    onWorkerUpdaterEvent(message)
+    parsed = null
   }
-  
-  if(parsed?.type === 'pong') {
-	document.getElementById('pong').innerText = 'worker time: ' + parsed.time
+
+  if (parsed?.type === 'pong') {
+    document.getElementById('pong').innerText = 'worker time: ' + parsed.time
   }
-  
+
   if (parsed?.type === 'msg') {
-	//const li = document.createElement('li')
-	//const ul = document.getElementById('messages')
-	//li.textContent = parsed.id + '|' + parsed.peer + '|' + parsed.text
-	//ul.appendChild(li)
-	//document.getElementById('count').innerText = ul.children.length + 'messages'
-	
-	store.add(parsed)
+    //const li = document.createElement('li')
+    //const ul = document.getElementById('messages')
+    //li.textContent = parsed.id + '|' + parsed.peer + '|' + parsed.text
+    //ul.appendChild(li)
+    //document.getElementById('count').innerText = ul.children.length + 'messages'
+
+    store.add(parsed)
   }
 
   if (!sentHello) {
@@ -137,8 +137,8 @@ document.getElementById('ping-btn').onclick = () => {
 }
 
 document.getElementById('sim-btn').onclick = () => {
-	store.clear()
-	bridge.writeWorkerIPC(workers.main, JSON.stringify({ type: 'sim:start', count: 5000}))
+  store.clear()
+  bridge.writeWorkerIPC(workers.main, JSON.stringify({ type: 'sim:start', count: 5000 }))
 }
 
 let scrollQueued = false

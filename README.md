@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+
 # hello-pear-electron <a name="hello-pear-electron"></a>
 
 > Pear Hello World for Electron with `pear-runtime`
@@ -647,7 +648,9 @@ pear multisig commit <touched-link> <request> ...responses
 [windows-sdk]: https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/
 [powershell-install]: https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows
 [msix-signing-guide]: https://learn.microsoft.com/en-us/windows/msix/package/create-certificate-package-signing
+
 =======
+
 # Pear Renderer Lab
 
 A hands-on learning and experimentation project focused on exploring, understanding, and extending the renderer layer of [hello-pear-electron](https://github.com/holepunchto/hello-pear-electron).
@@ -680,4 +683,5 @@ This repository will evolve as I explore the codebase, test ideas, and implement
 ## License
 
 Please refer to the original project's license and preserve its applicable terms when modifying or redistributing its code.
->>>>>>> fce6143caccc5cfbdea1fab88f0886abbe60acd6
+
+> > > > > > > fce6143caccc5cfbdea1fab88f0886abbe60acd6
