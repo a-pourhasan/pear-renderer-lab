@@ -2,13 +2,18 @@ import { createMessageStore } from './store.js'
 import { perf } from './performance.js'
 
 const store = createMessageStore()
-const listEl = document.getElementById('messages')
+//const listEl = document.getElementById('messages')
+const ROW_H = 28
+const OVERSCAN = 5
+const viewport = document.getElementById('viewport')
+const spacer = document.getElementById('spacer')
+const rowsEl = document.getElementById('rows')
 const countEl = document.getElementById('count')
 
 const bridge = window.bridge
 const decoder = new TextDecoder('utf-8')
 
-function render() {
+/* function render() {
 	const t0 = performance.now()
 	const items = store.getAll()
 	const frag = document.createDocumentFragment()
@@ -21,6 +26,33 @@ function render() {
 	const { received, unique } = store.getStats()
 	countEl.innerText = `${received} received, ${unique} unique, ${received - unique} duplicates`
 	perf.record(performance.now() - t0, items.length)
+} */
+
+function render() {
+  const t0 = performance.now()
+  const items = store.getAll()
+  spacer.style.height = items.length * ROW_H + 'px'
+
+  const start = Math.max(0, Math.floor(viewport.scrollTop / ROW_H) - OVERSCAN)
+  const end = Math.min(
+    items.length,
+    Math.ceil((viewport.scrollTop + viewport.clientHeight) / ROW_H) + OVERSCAN
+  )
+
+  const frag = document.createDocumentFragment()
+  for (let i = start; i < end; i++) {
+    const m = items[i]
+    const div = document.createElement('div')
+    div.className = 'row'
+    div.textContent = m.id + ' | ' + m.peer + ' | ' + m.text
+    frag.appendChild(div)
+  }
+  rowsEl.style.transform = `translateY(${start * ROW_H}px)`
+  rowsEl.replaceChildren(frag)
+
+  const { received, unique } = store.getStats()
+  countEl.innerText = `${received} received, ${unique} unique, ${received - unique} duplicates`
+  perf.record(performance.now() - t0, end - start)
 }
 
 store.subscribe(render)
@@ -108,6 +140,16 @@ document.getElementById('sim-btn').onclick = () => {
 	store.clear()
 	bridge.writeWorkerIPC(workers.main, JSON.stringify({ type: 'sim:start', count: 5000}))
 }
+
+let scrollQueued = false
+viewport.addEventListener('scroll', () => {
+  if (scrollQueued) return
+  scrollQueued = true
+  requestAnimationFrame(() => {
+    scrollQueued = false
+    render()
+  })
+})
 
 const offWorkerExit = bridge.onWorkerExit(workers.main, (code) => {
   console.log('Worker exited with code', code)

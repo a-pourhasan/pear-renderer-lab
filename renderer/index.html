@@ -36,6 +36,10 @@
       .container {
         text-align: center;
       }
+	  
+	  #viewport { height: 300px; overflow: auto; position: relative; }
+	  #rows { position: absolute; top: 0; left: 0; right: 0; }
+      .row { height: 28px; line-height: 28px; white-space: nowrap; overflow: hidden; }
     </style>
   </head>
   <body>
@@ -46,7 +50,11 @@
 	  <p id="pong"></p>
 	  <button id="sim-btn">Start Simulation (5000)</button>
 	  <p id="count">0 message</p>
-	  <ul id="messages" style="height: 300px; overflow: auto"></ul>
+	  <!-- <ul id="messages" style="height: 300px; overflow: auto"></ul> -->
+	  <div id="viewport">
+		<div id="spacer"></div>
+		<div id="rows"></div>
+	  </div>
     </div>
     <script type="module" src="app.js"></script>
   </body>
