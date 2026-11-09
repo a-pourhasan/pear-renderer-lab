@@ -13,6 +13,14 @@ This repo simulates that situation and walks through four steps to keep the UI c
 
 ![App overview](docs/screenshots/app-overview.png)
 
+## Simulation Demo
+
+The animation below shows the full 5,000-message simulation,
+including out-of-order delivery, duplicate messages,
+live statistics, and the virtualized message list.
+
+![Full Simulation Demo](docs/demos/simulation.gif)
+
 ---
 
 ## Why this project
